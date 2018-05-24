@@ -35,9 +35,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
-#if FLUENTHTTP_CORE_TPL
+ 
 using System.Threading.Tasks;
-#endif
+ 
 
 namespace Facebook
 {
@@ -100,7 +100,7 @@ namespace Facebook
             set { _httpWebRequest.Headers = value; }
         }
 
-#if !NETFX_CORE
+ 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the request should follow redirection responses.
 		/// </summary>
@@ -109,9 +109,9 @@ namespace Facebook
 			get { return _httpWebRequest.AllowAutoRedirect; }
 			set { _httpWebRequest.AllowAutoRedirect = value; }
 		}
-#endif
+ 
 
-#if !(WINDOWS_PHONE || NETFX_CORE)
+ 
 
 		/// <summary>
 		/// Gets or sets the content length.
@@ -130,9 +130,9 @@ namespace Facebook
             get { return _httpWebRequest.AllowWriteStreamBuffering; }
             set { _httpWebRequest.AllowWriteStreamBuffering = value; }
         }
-#endif
+ 
 
-#if !NETFX_CORE
+ 
 		/// <summary>
 		/// Gets or sets the user agent.
 		/// </summary>
@@ -141,7 +141,7 @@ namespace Facebook
 			get { return _httpWebRequest.UserAgent; }
 			set { _httpWebRequest.UserAgent = value; }
 		}
-#endif
+ 
 
         /// <summary>
         /// Gets or sets the cookie container.
@@ -178,9 +178,7 @@ namespace Facebook
             set { _httpWebRequest.Accept = value; }
         }
 
-#if !SILVERLIGHT
-
-#if !NETFX_CORE
+ 
 
 		/// <summary>
 		/// Gets the service point to use for the request.
@@ -262,7 +260,7 @@ namespace Facebook
 			set { _httpWebRequest.TransferEncoding = value; }
 		}
 
-#endif
+ 
 
         /// <summary>
         /// Gets or sets the proxy.
@@ -273,7 +271,7 @@ namespace Facebook
             set { _httpWebRequest.Proxy = value; }
         }
 
-#endif
+ 
 
         /// <summary>
         /// Try to set the value of the content length header.
@@ -286,12 +284,10 @@ namespace Facebook
         /// </returns>
         public virtual bool TrySetContentLength(long contentLength)
         {
-#if !(WINDOWS_PHONE || NETFX_CORE)
+ 
 			ContentLength = contentLength;
 			return true;
-#else
-            return false;
-#endif
+ 
         }
 
         /// <summary>
@@ -305,12 +301,10 @@ namespace Facebook
         /// </returns>
         public virtual bool TrySetUserAgent(string userAgent)
         {
-#if (!(SILVERLIGHT || NETFX_CORE) || WINDOWS_PHONE)
+ 
             UserAgent = userAgent;
             return true;
-#else
-            return false;
-#endif
+ 
         }
 
         /// <summary>
@@ -377,7 +371,7 @@ namespace Facebook
             return _httpWebRequest.EndGetRequestStream(asyncResult);
         }
 
-#if FLUENTHTTP_CORE_TPL
+ 
 
         /// <summary>
         /// Asynchronously gets the response.
@@ -397,9 +391,9 @@ namespace Facebook
             return Task<Stream>.Factory.FromAsync(BeginGetRequestStream, EndGetRequestStream, null);
         }
 
-#endif
+ 
 
-#if !(SILVERLIGHT || NETFX_CORE)
+ 
 
 		/// <summary>
 		/// Gets the response.
@@ -419,7 +413,7 @@ namespace Facebook
 			return _httpWebRequest.GetRequestStream();
 		}
 
-#endif
+ 
 
         private object _cancelledLock = new object();
 
@@ -548,8 +542,7 @@ namespace Facebook
             get { return _httpWebResponse.Headers; }
         }
 
-#if !SILVERLIGHT
-#if !NETFX_CORE
+ 
 
 		/// <summary>
 		/// Gets the content encoding.
@@ -598,10 +591,7 @@ namespace Facebook
 		{
 			get { return _httpWebResponse.Server; }
 		}
-
-#endif
-
-#endif
+ 
         /// <summary>
         /// Gets the response stream.
         /// </summary>
@@ -617,9 +607,9 @@ namespace Facebook
     /// <summary>
     /// Wrapper for web exceptions.
     /// </summary>
-#if !(NETFX_CORE || SILVERLIGHT)
+ 
 	[Serializable]
-#endif
+ 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class WebExceptionWrapper : Exception
     {
@@ -640,8 +630,7 @@ namespace Facebook
             _webException = webException;
             _status = webException == null ? WebExceptionStatus.UnknownError : webException.Status;
         }
-
-#if !(NETFX_CORE || SILVERLIGHT)
+ 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebExceptionWrapper"/> class.
 		/// </summary>
@@ -653,7 +642,7 @@ namespace Facebook
 			: base(info, context)
 		{
 		}
-#endif
+ 
 
         /// <summary>
         /// Gets the response of the web exception.
@@ -693,11 +682,10 @@ namespace Facebook
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-#if FLUENTHTTP_HTTPHELPER_PUBLIC
-	public
-#else
+ 
+ 
     internal
-#endif
+ 
  delegate void OpenReadCompletedEventHandler(object sender, OpenReadCompletedEventArgs e);
 
     /// <summary>
@@ -705,21 +693,17 @@ namespace Facebook
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-#if FLUENTHTTP_HTTPHELPER_PUBLIC
-	public
-#else
+ 
     internal
-#endif
+ 
  delegate void OpenWriteCompletedEventHandler(object sender, OpenWriteCompletedEventArgs e);
 
     /// <summary>
     /// Open read completed event args.
     /// </summary>
-#if FLUENTHTTP_HTTPHELPER_PUBLIC
-	public
-#else
+ 
     internal
-#endif
+ 
  class OpenReadCompletedEventArgs : AsyncCompletedEventArgs
     {
         private readonly Stream _result;
@@ -753,11 +737,9 @@ namespace Facebook
     /// <summary>
     /// Open write completed event args.
     /// </summary>
-#if FLUENTHTTP_HTTPHELPER_PUBLIC
-	public
-#else
+ 
     internal
-#endif
+ 
  class OpenWriteCompletedEventArgs : AsyncCompletedEventArgs
     {
         private readonly Stream _result;
@@ -791,11 +773,9 @@ namespace Facebook
     /// <summary>
     /// Http helper.
     /// </summary>
-#if FLUENTHTTP_HTTPHELPER_PUBLIC
-	public
-#else
+ 
     internal
-#endif
+ 
  class HttpHelper
     {
         private const string ErrorPerformingHttpRequest = "An error occurred performing a http web request.";
@@ -870,7 +850,7 @@ namespace Facebook
             get { return _httpWebResponse; }
         }
 
-#if !(SILVERLIGHT || NETFX_CORE)
+ 
 
 		/// <summary>
 		/// Opens the request stream synchronously for write.
@@ -937,7 +917,7 @@ namespace Facebook
 			}
 		}
 
-#endif
+ 
 
         /// <summary>
         /// Asynchronously opens the response stream for read.
@@ -954,21 +934,19 @@ namespace Facebook
 
                     int timeout = 0;
 
-#if !(SILVERLIGHT || NETFX_CORE)
+ 
 					if (HttpWebRequest.Timeout > 0)
 						timeout = HttpWebRequest.Timeout;
-#endif
+ 
 
                     if (Timeout > 0)
                         timeout = Timeout;
 
                     if (timeout > 0)
                     {
-#if NETFX_CORE
-                        // todo
-#else
+ 
                         ThreadPool.RegisterWaitForSingleObject(asyncResult.AsyncWaitHandle, ScanTimoutCallback, userToken, timeout, true);
-#endif
+ 
                     }
                 }
                 catch (WebException webException)
@@ -1117,7 +1095,7 @@ namespace Facebook
                 HttpWebRequest.Abort();
         }
 
-#if FLUENTHTTP_CORE_TPL
+ 
 
         static void TransferCompletionToTask<T>(TaskCompletionSource<T> tcs, AsyncCompletedEventArgs e, Func<T> getResult, Action unregisterHandler)
         {
@@ -1250,7 +1228,7 @@ namespace Facebook
             return tcs.Task;
         }
 
-#endif
+ 
 
         /// <summary>
         /// Cancels the http web request.
@@ -1297,7 +1275,7 @@ namespace Facebook
 
         #region UrlEncoding/UrlDecoding
 
-#if FLUENTHTTP_URLENCODING
+ 
 
         /// <summary>
         /// Url encodes the specified string.
@@ -1328,16 +1306,12 @@ namespace Facebook
         /// <returns>The url decoded string.</returns>
         public static string UrlDecode(string s)
         {
-#if WINDOWS_PHONE
-			return System.Net.HttpUtility.UrlDecode(s);
-#elif SILVERLIGHT
-			return System.Windows.Browser.HttpUtility.UrlDecode(s);
-#else
+ 
             return UrlDecode(s, Encoding.UTF8);
-#endif
+ 
         }
 
-#if !(SILVERLIGHT || WINDOWS_PHONE)
+ 
         private static string UrlDecode(string s, Encoding e)
         {
             if (null == s)
@@ -1439,17 +1413,13 @@ namespace Facebook
 
             return -1;
         }
-#endif
-
-#endif
+ 
 
         #endregion
 
         #region HtmlDecoding
 
-#if FLUENTHTTP_HTMLENCODING
-
-#if !(SILVERLIGHT || WINDOWS_PHONE)
+ 
 
         private static readonly System.Globalization.CultureInfo InvariantCulture =
             System.Globalization.CultureInfo.InvariantCulture;
@@ -1731,7 +1701,7 @@ namespace Facebook
             }
         }
 
-#endif
+ 
 
         /// <summary>
         /// Html decode the speficied string.
@@ -1740,11 +1710,7 @@ namespace Facebook
         /// <returns>The html decoded string.</returns>
         public static string HtmlDecode(string s)
         {
-#if WINDOWS_PHONE
-			return System.Net.HttpUtility.HtmlDecode(s);
-#elif SILVERLIGHT
-			return System.Windows.Browser.HttpUtility.HtmlDecode(s);
-#else
+ 
             if (s == null)
                 return null;
 
@@ -1753,9 +1719,7 @@ namespace Facebook
 
             if (s.IndexOf('&') == -1)
                 return s;
-#if NET_4_0
-			StringBuilder rawEntity = new StringBuilder ();
-#endif
+ 
             StringBuilder entity = new StringBuilder();
             StringBuilder output = new StringBuilder();
             int len = s.Length;
@@ -1776,9 +1740,7 @@ namespace Facebook
                     if (c == '&')
                     {
                         entity.Append(c);
-#if NET_4_0
-						rawEntity.Append (c);
-#endif
+ 
                         state = 1;
                     }
                     else
@@ -1825,9 +1787,7 @@ namespace Facebook
                             state = 3;
                         }
                         entity.Append(c);
-#if NET_4_0
-						rawEntity.Append (c);
-#endif
+ 
                     }
                 }
                 else if (state == 2)
@@ -1842,20 +1802,14 @@ namespace Facebook
                         output.Append(key);
                         state = 0;
                         entity.Length = 0;
-#if NET_4_0
-						rawEntity.Length = 0;
-#endif
+ 
                     }
                 }
                 else if (state == 3)
                 {
                     if (c == ';')
                     {
-#if NET_4_0
-						if (number == 0)
-							output.Append (rawEntity.ToString () + ";");
-						else
-#endif
+ 
                         if (number > 65535)
                         {
                             output.Append("&#");
@@ -1868,41 +1822,29 @@ namespace Facebook
                         }
                         state = 0;
                         entity.Length = 0;
-#if NET_4_0
-						rawEntity.Length = 0;
-#endif
+ 
                         have_trailing_digits = false;
                     }
-#if NETFX_CORE
-                    else if (is_hex_value && IsHexDigit(c))
-#else
+ 
 					else if (is_hex_value && Uri.IsHexDigit(c))
-#endif
+ 
                     {
-#if NETFX_CORE
-                        number = number * 16 + FromHex(c);
-#else
+ 
 						number = number * 16 + Uri.FromHex(c);
-#endif
+ 
                         have_trailing_digits = true;
-#if NET_4_0
-						rawEntity.Append (c);
-#endif
+ 
                     }
                     else if (Char.IsDigit(c))
                     {
                         number = number * 10 + ((int)c - '0');
                         have_trailing_digits = true;
-#if NET_4_0
-						rawEntity.Append (c);
-#endif
+ 
                     }
                     else if (number == 0 && (c == 'x' || c == 'X'))
                     {
                         is_hex_value = true;
-#if NET_4_0
-						rawEntity.Append (c);
-#endif
+ 
                     }
                     else
                     {
@@ -1926,152 +1868,18 @@ namespace Facebook
                 output.Append(number.ToString(InvariantCulture));
             }
             return output.ToString();
-#endif
+ 
         }
 
-#if NETFX_CORE
-        private static bool IsHexDigit(char digit)
-        {
-            return (('0' <= digit && digit <= '9') ||
-                    ('a' <= digit && digit <= 'f') ||
-                    ('A' <= digit && digit <= 'F'));
-        }
-
-        private static int FromHex(char digit)
-        {
-            if ('0' <= digit && digit <= '9')
-            {
-                return (int)(digit - '0');
-            }
-
-            if ('a' <= digit && digit <= 'f')
-                return (int)(digit - 'a' + 10);
-
-            if ('A' <= digit && digit <= 'F')
-                return (int)(digit - 'A' + 10);
-
-            throw new ArgumentException("digit");
-        }
-#endif
-
-#endif
+ 
 
         #endregion
 
         #region Utils
 
-#if FLUENTHTTP_HELPERS
+ 
 
-		/// <summary>
-		/// Add starting slash if not present.
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		public static string AddStartingSlashIfNotPresent(string input)
-		{
-			if (string.IsNullOrEmpty(input))
-			{
-				return "/";
-			}
-
-			// if not null or empty
-			if (input[0] != '/')
-			{
-				// if doesn't start with / then add /
-				return "/" + input;
-			}
-			else
-			{
-				// else return the original input.
-				return input;
-			}
-		}
-
-		/// <summary>
-		/// Builds the request url.
-		/// </summary>
-		/// <param name="baseUrl"></param>
-		/// <param name="resourcePath"></param>
-		/// <param name="queryStrings"></param>
-		/// <typeparam name="TKey"></typeparam>
-		/// <typeparam name="TValue"></typeparam>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"></exception>
-		public static string BuildRequestUrl<TKey, TValue>(string baseUrl, string resourcePath, IEnumerable<KeyValuePair<TKey, TValue>> queryStrings)
-		{
-			var sb = new StringBuilder();
-
-			if (string.IsNullOrEmpty(baseUrl))
-				throw new ArgumentNullException("baseUrl");
-
-			sb.Append(baseUrl);
-			if (!string.IsNullOrEmpty(resourcePath))
-				sb.Append(AddStartingSlashIfNotPresent(resourcePath));
-			sb.Append("?");
-
-			if (queryStrings != null)
-			{
-				foreach (var queryString in queryStrings)
-				{
-					// note: assume queryString is already url encoded.
-					sb.AppendFormat("{0}={1}&", queryString.Key, queryString.Value);
-				}
-			}
-
-			// remote the last & or ?
-			--sb.Length;
-
-			return sb.ToString();
-		}
-
-		/*
-		public virtual void SetHeaders<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> requestHeaders)
-			where TKey : class
-			where TValue : class
-		{
-			foreach (var requestHeader in requestHeaders)
-			{
-				if (requestHeader.Key == null)
-					throw new ArgumentNullException("key");
-				if (requestHeader.Value == null)
-					throw new ArgumentNullException("value");
-
-				string name = requestHeader.Key.ToString();
-				string value = requestHeader.Value.ToString();
-
-				// todo: add more special headers
-				if (name.Equals("content-type", StringComparison.OrdinalIgnoreCase))
-				{
-					_httpWebRequest.ContentType = value;
-				}
-				else if (name.Equals("content-length", StringComparison.OrdinalIgnoreCase))
-				{
-#if (WINDOWS_PHONE || NETFX_CORE)
-					throw new Exception("Cannot set content-length.");
-#else
-					_httpWebRequest.ContentLength = Convert.ToInt64(value);
-#endif
-				}
-				else if (name.Equals("user-agent", StringComparison.OrdinalIgnoreCase))
-				{
-#if NETFX_CORE
-					throw new Exception("Cannot set user-agent.");
-#else
-					_httpWebRequest.UserAgent = value;
-#endif
-				}
-				else
-				{
-					_httpWebRequest.Headers[name] = value;
-				}
-			}
-		}
-		
-		*/
-
-#endif
-
-#if FLUENTHTTP_CORE_STREAM
+ 
 
 		/// <summary>
 		/// Action delegate.
@@ -2120,8 +1928,7 @@ namespace Facebook
 					return;
 			}
 		}
-
-#if FLUENTHTTP_CORE_TPL
+ 
 
 		/// <summary>
 		/// Asynchronously reads the stream.
@@ -2149,27 +1956,9 @@ namespace Facebook
 			return Task.Factory.FromAsync(stream.BeginWrite, stream.EndWrite, buffer, offset, count, null, TaskCreationOptions.None);
 		}
 
-#endif
-
-#endif
+ 
 
         #endregion
-
-        #region Authentication
-
-#if FLUENTHTTP_HTTPBASIC_AUTHENTICATION
-
-		/// <summary>
-		/// Sets the http basic authorization header on the http web request.
-		/// </summary>
-		/// <param name="username">The username</param>
-		/// <param name="password">the password</param>
-		public void AuthenticateUsingHttpBasicAuthentication(string username, string password)
-		{
-			_httpWebRequest.Headers["Authorization"] = string.Concat("Basic ", Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", username, password))));
-		}
-
-#endif
-        #endregion
+ 
     }
 }

@@ -54,15 +54,15 @@ namespace Facebook
         /// The json result task.
         /// </returns>
         public virtual Task<object> BatchTaskAsync(FacebookBatchParameter[] batchParameters, object userState, CancellationToken cancellationToken
-#if ASYNC_AWAIT
+ 
 , System.IProgress<FacebookUploadProgressChangedEventArgs> uploadProgress
-#endif
+ 
 )
         {
             return BatchTaskAsync(batchParameters, userState, null, cancellationToken
-#if ASYNC_AWAIT
+ 
 , uploadProgress
-#endif
+ 
                 );
         }
 
@@ -85,20 +85,20 @@ namespace Facebook
         /// The json result task.
         /// </returns>
         public virtual Task<object> BatchTaskAsync(FacebookBatchParameter[] batchParameters, object userState, object parameters, CancellationToken cancellationToken
-#if ASYNC_AWAIT
+ 
 , System.IProgress<FacebookUploadProgressChangedEventArgs> uploadProgress
-#endif
+ 
 )
         {
             var actualParameter = PrepareBatchRequest(batchParameters, parameters);
             return PostTaskAsync(null, actualParameter, userState, cancellationToken
-#if ASYNC_AWAIT
+ 
 , uploadProgress
-#endif
+ 
             );
         }
 
-#if ASYNC_AWAIT
+ 
 
         public virtual Task<object> BatchTaskAsync(FacebookBatchParameter[] batchParameters, object userToken, CancellationToken cancellationToken)
         {
@@ -110,7 +110,7 @@ namespace Facebook
             return BatchTaskAsync(batchParameters, userToken, parameters, cancellationToken, null);
         }
 
-#endif
+ 
 
     }
 }

@@ -28,9 +28,9 @@ namespace Facebook
     using System.Globalization;
     using System.Linq;
     using System.Net;
-#if TYPEINFO
+ 
     using System.Reflection;
-#endif
+ 
     using System.Text;
 
     /// <summary>
@@ -196,7 +196,7 @@ namespace Facebook
         /// <summary>
         /// Serialize object to json.
         /// </summary>
-        [Obsolete("Use SetJsonSerializers")]
+   
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Func<object, string> SerializeJson
         {
@@ -206,8 +206,7 @@ namespace Facebook
 
         /// <summary>
         /// Deserialize json to object.
-        /// </summary>
-        [Obsolete("Use SetJsonSerializers")]
+        /// </summary> 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Func<string, Type, object> DeserializeJson
         {
@@ -470,10 +469,7 @@ namespace Facebook
                 if (mediaObjects.Count > 0 && mediaStreams.Count > 0)
                     throw new InvalidOperationException("Attachments (FacebookMediaObject/FacebookMediaStream) are valid only in POST requests.");
 
-#if SILVERLIGHT && !WINDOWS_PHONE
-                if (httpMethod == HttpMethod.Delete)
-                    queryString.Append("method=delete&");
-#endif
+ 
                 foreach (var kvp in parametersWithoutMediaObjects)
                     queryString.AppendFormat("{0}={1}&", HttpHelper.UrlEncode(kvp.Key), HttpHelper.UrlEncode(BuildHttpQuery(kvp.Value, HttpHelper.UrlEncode)));
             }
@@ -590,11 +586,11 @@ namespace Facebook
                     request.Method = "GET";
                     break;
                 case HttpMethod.Delete:
-#if !(SILVERLIGHT && !WINDOWS_PHONE)
+ 
                     request.Method = "DELETE";
                     request.TrySetContentLength(0);
                     break;
-#endif
+ 
                 case HttpMethod.Post:
                     request.Method = "POST";
                     break;
@@ -608,13 +604,10 @@ namespace Facebook
             if (!string.IsNullOrEmpty(etag))
                 request.Headers[HttpRequestHeader.IfNoneMatch] = string.Concat('"', etag, '"');
 
-#if !(SILVERLIGHT || NETFX_CORE)
+ 
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             request.AllowWriteStreamBuffering = false;
-#endif
-#if NETFX_CORE
-            request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip,deflate";
-#endif
+ 
 
             if (contentLength.HasValue)
                 request.TrySetContentLength(contentLength.Value);
@@ -866,18 +859,12 @@ namespace Facebook
 
                 // convert anonymous objects / unknown objects to IDictionary<string, object>
                 dictionary = new Dictionary<string, object>();
-#if TYPEINFO
+ 
                 foreach (var propertyInfo in parameters.GetType().GetTypeInfo().DeclaredProperties.Where(p => p.CanRead))
                 {
                     dictionary[propertyInfo.Name] = propertyInfo.GetValue(parameters, null);
                 }
-#else
-                foreach (var propertyInfo in parameters.GetType().GetProperties())
-                {
-                    if (!propertyInfo.CanRead) continue;
-                    dictionary[propertyInfo.Name] = propertyInfo.GetValue(parameters, null);
-                }
-#endif
+ 
             }
 
             foreach (var parameter in dictionary)

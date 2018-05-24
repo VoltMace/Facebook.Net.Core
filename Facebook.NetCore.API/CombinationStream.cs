@@ -99,41 +99,7 @@ namespace Facebook
             return result;
         }
 
-#if NETFX_CORE
-
-        public async override System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            int result = 0;
-            int buffPostion = offset;
-
-            while (count > 0)
-            {
-                int bytesRead = await _currentStream.ReadAsync(buffer, buffPostion, count, cancellationToken);
-                result += bytesRead;
-                buffPostion += bytesRead;
-                _postion += bytesRead;
-
-                if (bytesRead <= count)
-                    count -= bytesRead;
-
-                if (count > 0)
-                {
-                    if (_currentStreamIndex >= _streams.Count)
-                        break;
-
-                    _currentStream = _streams[_currentStreamIndex++];
-                }
-            }
-
-            return result;
-        }
-
-        public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            throw new InvalidOperationException("Stream is not writable");
-        }
-
-#else
+ 
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             CombinationStreamAsyncResult asyncResult = new CombinationStreamAsyncResult(state);
@@ -256,7 +222,7 @@ namespace Facebook
             public int BytesRead;
         }
 
-#endif
+ 
 
         public override void Write(byte[] buffer, int offset, int count)
         {

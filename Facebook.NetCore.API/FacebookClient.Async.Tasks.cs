@@ -35,15 +35,15 @@ namespace Facebook
         /// <param name="resultType">The type of deserialize object into.</param>
         /// <param name="userState">The user state.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-#if ASYNC_AWAIT
+ 
         /// <param name="uploadProgress">The upload progress</param>
-#endif
+ 
         /// <returns>The task of json result with headers.</returns>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         protected virtual Task<object> ApiTaskAsync(HttpMethod httpMethod, string path, object parameters, Type resultType, object userState, CancellationToken cancellationToken
-#if ASYNC_AWAIT
+ 
 , IProgress<FacebookUploadProgressChangedEventArgs> uploadProgress
-#endif
+ 
 )
         {
             var tcs = new TaskCompletionSource<object>(userState);
@@ -73,7 +73,7 @@ namespace Facebook
                                                          }
                                                      });
 
-#if ASYNC_AWAIT
+ 
                 EventHandler<FacebookUploadProgressChangedEventArgs> uploadProgressHandler = null;
                 if (uploadProgress != null)
                 {
@@ -86,7 +86,7 @@ namespace Facebook
 
                     UploadProgressChanged += uploadProgressHandler;
                 }
-#endif
+ 
 
             EventHandler<FacebookApiEventArgs> handler = null;
             handler = (sender, e) =>
@@ -96,9 +96,9 @@ namespace Facebook
                     if (ctr != null) ctr.Dispose();
                     RemoveTaskAsyncHandlers(httpMethod, handler);
                     HttpWebRequestWrapperCreated -= httpWebRequestCreatedHandler;
-#if ASYNC_AWAIT
+ 
                     if (uploadProgressHandler != null) UploadProgressChanged -= uploadProgressHandler;
-#endif
+ 
                 });
             };
 
@@ -115,22 +115,24 @@ namespace Facebook
 
             try
             {
+#pragma warning disable CS0618 // Тип или член устарел
                 ApiAsync(httpMethod, path, parameters, resultType, tcs);
+#pragma warning restore CS0618 // Тип или член устарел
             }
             catch
             {
                 RemoveTaskAsyncHandlers(httpMethod, handler);
                 HttpWebRequestWrapperCreated -= httpWebRequestCreatedHandler;
-#if ASYNC_AWAIT
+ 
                     if (uploadProgressHandler != null) UploadProgressChanged -= uploadProgressHandler;
-#endif
+ 
                 throw;
             }
 
             return tcs.Task;
         }
 
-#if ASYNC_AWAIT
+ 
 
         /// <summary>
         /// Makes an asynchronous request to the Facebook server.
@@ -147,7 +149,7 @@ namespace Facebook
             return ApiTaskAsync(httpMethod, path, parameters, resultType, userState, cancellationToken, null);
         }
 
-#endif
+ 
 
         private static void TransferCompletionToTask<T>(System.Threading.Tasks.TaskCompletionSource<T> tcs, System.ComponentModel.AsyncCompletedEventArgs e, Func<T> getResult, Action unregisterHandler)
         {
@@ -332,7 +334,7 @@ namespace Facebook
             return ApiTaskAsync(HttpMethod.Post, path, parameters, null, userState, cancellationToken);
         }
 
-#if ASYNC_AWAIT
+ 
         /// <summary>
         /// Makes an asynchronous POST request to the Facebook server.
         /// </summary>
@@ -340,15 +342,15 @@ namespace Facebook
         /// <param name="parameters">The parameters</param>
         /// <param name="userState">The user state.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-#if ASYNC_AWAIT
+ 
         /// <param name="uploadProgress">The upload progress</param>
-#endif
+ 
         /// <returns>The json result task.</returns>
         public virtual Task<object> PostTaskAsync(string path, object parameters, object userState, CancellationToken cancellationToken, IProgress<FacebookUploadProgressChangedEventArgs> uploadProgress)
         {
             return ApiTaskAsync(HttpMethod.Post, path, parameters, null, userState, cancellationToken, uploadProgress);
         }
-#endif
+ 
 
         /// <summary>
         /// Makes an asynchronous DELETE request to the Facebook server.

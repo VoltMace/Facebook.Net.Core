@@ -26,9 +26,9 @@ namespace Facebook
     /// <summary>
     /// Represent errors that occur while calling a Facebook API.
     /// </summary>
-#if !(SILVERLIGHT || NETFX_CORE)
+ 
     [Serializable]
-#endif
+ 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly",
         Justification = "There are security issues associated with this method that make it difficult to support when running in partial trust.")]
     public class FacebookApiException : Exception
@@ -96,7 +96,7 @@ namespace Facebook
         {
         }
 
-#if !(SILVERLIGHT || NETFX_CORE)
+ 
         /// <summary>
         /// Initializes a new instance of the <see cref="FacebookApiException"/> class.
         /// </summary>
@@ -108,7 +108,7 @@ namespace Facebook
             : base(info, context)
         {
         }
-#endif
+ 
 
         /// <summary>
         /// Gets or sets the type of the error.

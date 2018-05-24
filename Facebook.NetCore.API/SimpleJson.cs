@@ -46,22 +46,16 @@
 
 // original json parsing code from http://techblog.procurios.nl/k/618/news/view/14605/14863/How-do-I-write-my-own-parser-for-JSON.html
 
-#if NETFX_CORE
-#define SIMPLE_JSON_TYPEINFO
-#endif
+ 
 
 using System;
 using System.CodeDom.Compiler;
 using System.Collections;
-using System.Collections.Generic;
-#if !SIMPLE_JSON_NO_LINQ_EXPRESSION
-using System.Linq.Expressions;
-#endif
+using System.Collections.Generic; 
+using System.Linq.Expressions; 
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-#if SIMPLE_JSON_DYNAMIC
-using System.Dynamic;
-#endif
+using System.Diagnostics.CodeAnalysis; 
+using System.Dynamic; 
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -79,11 +73,8 @@ namespace Facebook
     [GeneratedCode("simple-json", "1.0.0")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-#if SIMPLE_JSON_OBJARRAYINTERNAL
-    internal
-#else
-    public
-#endif
+ 
+    public 
  class JsonArray : List<object>
     {
         /// <summary>
@@ -113,15 +104,13 @@ namespace Facebook
     [GeneratedCode("simple-json", "1.0.0")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-#if SIMPLE_JSON_OBJARRAYINTERNAL
-    internal
-#else
+ 
     public
-#endif
+ 
  class JsonObject :
-#if SIMPLE_JSON_DYNAMIC
+ 
  DynamicObject,
-#endif
+ 
  IDictionary<string, object>
     {
         /// <summary>
@@ -345,7 +334,7 @@ namespace Facebook
             return SimpleJson.SerializeObject(this);
         }
 
-#if SIMPLE_JSON_DYNAMIC
+ 
         /// <summary>
         /// Provides implementation for type conversion operations. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations that convert an object from one type to another.
         /// </summary>
@@ -480,7 +469,7 @@ namespace Facebook
             foreach (var key in Keys)
                 yield return key;
         }
-#endif
+ 
     }
 }
 
@@ -494,11 +483,8 @@ namespace Facebook
     /// All numbers are parsed to doubles.
     /// </summary>
     [GeneratedCode("simple-json", "1.0.0")]
-#if SIMPLE_JSON_INTERNAL
-    internal
-#else
-    public
-#endif
+ 
+    internal 
  static class SimpleJson
     {
         private const int TOKEN_NONE = 0;
@@ -1185,11 +1171,9 @@ namespace Facebook
             {
                 return _currentJsonSerializerStrategy ??
                     (_currentJsonSerializerStrategy =
-#if SIMPLE_JSON_DATACONTRACT
+ 
  DataContractJsonSerializerStrategy
-#else
- PocoJsonSerializerStrategy
-#endif
+ 
 );
             }
             set
@@ -1208,7 +1192,7 @@ namespace Facebook
             }
         }
 
-#if SIMPLE_JSON_DATACONTRACT
+ 
 
         private static DataContractJsonSerializerStrategy _dataContractJsonSerializerStrategy;
         [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -1220,15 +1204,12 @@ namespace Facebook
             }
         }
 
-#endif
+ 
     }
     
     [GeneratedCode("simple-json", "1.0.0")]
-#if SIMPLE_JSON_INTERNAL
-    internal
-#else
-    public
-#endif
+ 
+    internal 
  interface IJsonSerializerStrategy
     {
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification="Need to support .NET 2")]
@@ -1237,11 +1218,8 @@ namespace Facebook
     }
 
     [GeneratedCode("simple-json", "1.0.0")]
-#if SIMPLE_JSON_INTERNAL
-    internal
-#else
-    public
-#endif
+ 
+    internal 
  class PocoJsonSerializerStrategy : IJsonSerializerStrategy
     {
         internal IDictionary<Type, ReflectionUtils.ConstructorDelegate> ConstructorCache;
@@ -1514,13 +1492,10 @@ namespace Facebook
         }
     }
 
-#if SIMPLE_JSON_DATACONTRACT
+ 
     [GeneratedCode("simple-json", "1.0.0")]
-#if SIMPLE_JSON_INTERNAL
-    internal
-#else
-    public
-#endif
+ 
+    internal 
  class DataContractJsonSerializerStrategy : PocoJsonSerializerStrategy
     {
         public DataContractJsonSerializerStrategy()
@@ -1591,18 +1566,16 @@ namespace Facebook
         }
     }
 
-#endif
+ 
 
     namespace Reflection
     {
         // This class is meant to be copied into other libraries. So we want to exclude it from Code Analysis rules
  	    // that might be in place in the target project.
         [GeneratedCode("reflection-utils", "1.0.0")]
-#if SIMPLE_JSON_REFLECTION_UTILS_PUBLIC
-        public
-#else
+ 
         internal
-#endif
+ 
  class ReflectionUtils
         {
             private static readonly object[] EmptyObjects = new object[] { };
@@ -1613,39 +1586,28 @@ namespace Facebook
 
             public delegate TValue ThreadSafeDictionaryValueFactory<TKey, TValue>(TKey key);
 
-#if SIMPLE_JSON_TYPEINFO
-            public static TypeInfo GetTypeInfo(Type type)
-            {
-                return type.GetTypeInfo();
-            }
-#else
+ 
             public static Type GetTypeInfo(Type type)
             {
                 return type;
             }
-#endif
+ 
 
             public static Attribute GetAttribute(MemberInfo info, Type type)
             {
-#if SIMPLE_JSON_TYPEINFO
-                if (info == null || type == null || !info.IsDefined(type))
-                    return null;
-                return info.GetCustomAttribute(type);
-#else
+ 
                 if (info == null || type == null || !Attribute.IsDefined(info, type))
                     return null;
                 return Attribute.GetCustomAttribute(info, type);
-#endif
+ 
             }
 
             public static Type GetGenericListElementType(Type type)
             {
                 IEnumerable<Type> interfaces;
-#if SIMPLE_JSON_TYPEINFO
-                interfaces = type.GetTypeInfo().ImplementedInterfaces;
-#else
+ 
                 interfaces = type.GetInterfaces();
-#endif
+ 
                 foreach (Type implementedInterface in interfaces)
                 {
                     if (IsTypeGeneric(implementedInterface) &&
@@ -1660,24 +1622,18 @@ namespace Facebook
             public static Attribute GetAttribute(Type objectType, Type attributeType)
             {
 
-#if SIMPLE_JSON_TYPEINFO
-                if (objectType == null || attributeType == null || !objectType.GetTypeInfo().IsDefined(attributeType))
-                    return null;
-                return objectType.GetTypeInfo().GetCustomAttribute(attributeType);
-#else
+ 
                 if (objectType == null || attributeType == null || !Attribute.IsDefined(objectType, attributeType))
                     return null;
                 return Attribute.GetCustomAttribute(objectType, attributeType);
-#endif
+ 
             }
 
             public static Type[] GetGenericTypeArguments(Type type)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return type.GetTypeInfo().GenericTypeArguments;
-#else
+ 
                 return type.GetGenericArguments();
-#endif
+ 
             }
 
             public static bool IsTypeGeneric(Type type)
@@ -1695,10 +1651,7 @@ namespace Facebook
                 return (genericDefinition == typeof(IList<>)
                     || genericDefinition == typeof(ICollection<>)
                     || genericDefinition == typeof(IEnumerable<>)
-#if SIMPLE_JSON_READONLY_COLLECTIONS
-                    || genericDefinition == typeof(IReadOnlyCollection<>)
-                    || genericDefinition == typeof(IReadOnlyList<>)
-#endif
+ 
                     );
             }
 
@@ -1709,13 +1662,10 @@ namespace Facebook
 
             public static bool IsTypeDictionary(Type type)
             {
-#if SIMPLE_JSON_TYPEINFO
-                if (typeof(IDictionary<,>).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-                    return true;
-#else
+ 
                 if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
                     return true;
-#endif
+ 
                 if (!GetTypeInfo(type).IsGenericType)
                     return false;
 
@@ -1740,11 +1690,9 @@ namespace Facebook
 
             public static IEnumerable<ConstructorInfo> GetConstructors(Type type)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return type.GetTypeInfo().DeclaredConstructors;
-#else
+ 
                 return type.GetConstructors();
-#endif
+ 
             }
 
             public static ConstructorInfo GetConstructorInfo(Type type, params Type[] argsType)
@@ -1778,56 +1726,44 @@ namespace Facebook
 
             public static IEnumerable<PropertyInfo> GetProperties(Type type)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return type.GetRuntimeProperties();
-#else
+ 
                 return type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-#endif
+ 
             }
 
             public static IEnumerable<FieldInfo> GetFields(Type type)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return type.GetRuntimeFields();
-#else
+ 
                 return type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-#endif
+ 
             }
 
             public static MethodInfo GetGetterMethodInfo(PropertyInfo propertyInfo)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return propertyInfo.GetMethod;
-#else
+ 
                 return propertyInfo.GetGetMethod(true);
-#endif
+ 
             }
 
             public static MethodInfo GetSetterMethodInfo(PropertyInfo propertyInfo)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return propertyInfo.SetMethod;
-#else
+ 
                 return propertyInfo.GetSetMethod(true);
-#endif
+ 
             }
 
             public static ConstructorDelegate GetContructor(ConstructorInfo constructorInfo)
             {
-#if SIMPLE_JSON_NO_LINQ_EXPRESSION
-                return GetConstructorByReflection(constructorInfo);
-#else
+ 
                 return GetConstructorByExpression(constructorInfo);
-#endif
+ 
             }
 
             public static ConstructorDelegate GetContructor(Type type, params Type[] argsType)
             {
-#if SIMPLE_JSON_NO_LINQ_EXPRESSION
-                return GetConstructorByReflection(type, argsType);
-#else
+ 
                 return GetConstructorByExpression(type, argsType);
-#endif
+ 
             }
 
             public static ConstructorDelegate GetConstructorByReflection(ConstructorInfo constructorInfo)
@@ -1841,7 +1777,7 @@ namespace Facebook
                 return constructorInfo == null ? null : GetConstructorByReflection(constructorInfo);
             }
 
-#if !SIMPLE_JSON_NO_LINQ_EXPRESSION
+ 
 
             public static ConstructorDelegate GetConstructorByExpression(ConstructorInfo constructorInfo)
             {
@@ -1868,24 +1804,20 @@ namespace Facebook
                 return constructorInfo == null ? null : GetConstructorByExpression(constructorInfo);
             }
 
-#endif
+
 
             public static GetDelegate GetGetMethod(PropertyInfo propertyInfo)
             {
-#if SIMPLE_JSON_NO_LINQ_EXPRESSION
-                return GetGetMethodByReflection(propertyInfo);
-#else
+ 
                 return GetGetMethodByExpression(propertyInfo);
-#endif
+ 
             }
 
             public static GetDelegate GetGetMethod(FieldInfo fieldInfo)
             {
-#if SIMPLE_JSON_NO_LINQ_EXPRESSION
-                return GetGetMethodByReflection(fieldInfo);
-#else
+ 
                 return GetGetMethodByExpression(fieldInfo);
-#endif
+ 
             }
 
             public static GetDelegate GetGetMethodByReflection(PropertyInfo propertyInfo)
@@ -1899,7 +1831,7 @@ namespace Facebook
                 return delegate(object source) { return fieldInfo.GetValue(source); };
             }
 
-#if !SIMPLE_JSON_NO_LINQ_EXPRESSION
+ 
 
             public static GetDelegate GetGetMethodByExpression(PropertyInfo propertyInfo)
             {
@@ -1918,24 +1850,20 @@ namespace Facebook
                 return delegate(object source) { return compiled(source); };
             }
 
-#endif
+ 
 
             public static SetDelegate GetSetMethod(PropertyInfo propertyInfo)
             {
-#if SIMPLE_JSON_NO_LINQ_EXPRESSION
-                return GetSetMethodByReflection(propertyInfo);
-#else
+ 
                 return GetSetMethodByExpression(propertyInfo);
-#endif
+
             }
 
             public static SetDelegate GetSetMethod(FieldInfo fieldInfo)
             {
-#if SIMPLE_JSON_NO_LINQ_EXPRESSION
-                return GetSetMethodByReflection(fieldInfo);
-#else
+ 
                 return GetSetMethodByExpression(fieldInfo);
-#endif
+ 
             }
 
             public static SetDelegate GetSetMethodByReflection(PropertyInfo propertyInfo)
@@ -1949,7 +1877,7 @@ namespace Facebook
                 return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
             }
 
-#if !SIMPLE_JSON_NO_LINQ_EXPRESSION
+ 
 
             public static SetDelegate GetSetMethodByExpression(PropertyInfo propertyInfo)
             {
@@ -1973,13 +1901,11 @@ namespace Facebook
 
             public static BinaryExpression Assign(Expression left, Expression right)
             {
-#if SIMPLE_JSON_TYPEINFO
-                return Expression.Assign(left, right);
-#else
+ 
                 MethodInfo assign = typeof(Assigner<>).MakeGenericType(left.Type).GetMethod("Assign");
                 BinaryExpression assignExpr = Expression.Add(left, right, assign);
                 return assignExpr;
-#endif
+ 
             }
 
             private static class Assigner<T>
@@ -1990,7 +1916,7 @@ namespace Facebook
                 }
             }
 
-#endif
+
 
             public sealed class ThreadSafeDictionary<TKey, TValue> : IDictionary<TKey, TValue>
             {

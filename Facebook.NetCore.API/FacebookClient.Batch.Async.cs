@@ -38,10 +38,10 @@ namespace Facebook
         /// <param name="batchParameters">The list of batch parameters.</param>
         /// <param name="userState">The user state.</param>
         /// <param name="parameters">The parameters.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use BatchTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void BatchAsync(FacebookBatchParameter[] batchParameters, object userState, object parameters)
         {
             var actualParameter = PrepareBatchRequest(batchParameters, parameters);
@@ -53,10 +53,10 @@ namespace Facebook
         /// </summary>
         /// <param name="batchParameters">The list of batch parameters.</param>
         /// <param name="userState">The user state.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use BatchTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void BatchAsync(FacebookBatchParameter[] batchParameters, object userState)
         {
             BatchAsync(batchParameters, userState, null);
@@ -66,10 +66,10 @@ namespace Facebook
         /// Makes an asynchronous request to the Facebook server.
         /// </summary>
         /// <param name="batchParameters">The list of batch parameters.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use BatchTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void BatchAsync(FacebookBatchParameter[] batchParameters)
         {
             BatchAsync(batchParameters, null);

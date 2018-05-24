@@ -21,13 +21,11 @@ namespace Facebook
 {
     using System;
     using System.Collections.Generic;
-#if FLUENTHTTP_CORE_TPL
+ 
     using System.ComponentModel;
-#endif
+ 
     using System.Diagnostics.CodeAnalysis;
-#if NETFX_CORE
-    using System.Linq;
-#endif
+ 
     using System.IO;
     using System.Net;
 
@@ -57,7 +55,7 @@ namespace Facebook
         /// </summary>
         public event EventHandler<FacebookUploadProgressChangedEventArgs> UploadProgressChanged;
 
-#if FLUENTHTTP_CORE_TPL
+ 
 
         /// <summary>
         /// Event handler when http web request wrapper is created for async api only.
@@ -65,7 +63,7 @@ namespace Facebook
         /// </summary>
         private event EventHandler<HttpWebRequestCreatedEventArgs> HttpWebRequestWrapperCreated;
 
-#endif
+ 
 
         /// <summary>
         /// Cancels asynchronous requests.
@@ -91,10 +89,10 @@ namespace Facebook
         /// <param name="resultType">The type of deserialize object into.</param>
         /// <param name="userState">The user state.</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use ApiTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         protected virtual void ApiAsync(HttpMethod httpMethod, string path, object parameters, Type resultType, object userState)
         {
             Stream input;
@@ -103,10 +101,10 @@ namespace Facebook
             var httpHelper = PrepareRequest(httpMethod, path, parameters, resultType, out input, out containsEtag, out batchEtags);
             _httpWebRequest = httpHelper.HttpWebRequest;
 
-#if FLUENTHTTP_CORE_TPL
+ 
             if (HttpWebRequestWrapperCreated != null)
                 HttpWebRequestWrapperCreated(this, new HttpWebRequestCreatedEventArgs(userState, httpHelper.HttpWebRequest));
-#endif
+ 
 
             var uploadProgressChanged = UploadProgressChanged;
             bool notifyUploadProgressChanged = uploadProgressChanged != null && httpHelper.HttpWebRequest.Method == "POST";
@@ -127,46 +125,7 @@ namespace Facebook
                         {
                             using (var stream = e.Result)
                             {
-#if NETFX_CORE
-                                bool compressed = false;
-                                
-                                var contentEncoding = httpHelper.HttpWebResponse.Headers.AllKeys.Contains("Content-Encoding") ? httpHelper.HttpWebResponse.Headers["Content-Encoding"] : null;
-                                if (contentEncoding != null)
-                                {
-                                    if (contentEncoding.IndexOf("gzip") != -1)
-                                    {
-                                        using (var uncompressedStream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress))
-                                        {
-                                            using (var reader = new StreamReader(uncompressedStream))
-                                            {
-                                                responseString = reader.ReadToEnd();
-                                            }
-                                        }
-
-                                        compressed = true;
-                                    }
-                                    else if (contentEncoding.IndexOf("deflate") != -1)
-                                    {
-                                        using (var uncompressedStream = new System.IO.Compression.DeflateStream(stream, System.IO.Compression.CompressionMode.Decompress))
-                                        {
-                                            using (var reader = new StreamReader(uncompressedStream))
-                                            {
-                                                responseString = reader.ReadToEnd();
-                                            }
-                                        }
-
-                                        compressed = true;
-                                    }
-                                }
-
-                                if (!compressed)
-                                {
-                                    using (var reader = new StreamReader(stream))
-                                    {
-                                        responseString = reader.ReadToEnd();
-                                    }
-                                }
-#else
+ 
                                 var response = httpHelper.HttpWebResponse;
                                 if (response != null && response.StatusCode == HttpStatusCode.NotModified)
                                 {
@@ -186,7 +145,7 @@ namespace Facebook
                                 {
                                     responseString = reader.ReadToEnd();
                                 }
-#endif
+ 
                             }
 
                             try
@@ -336,10 +295,10 @@ namespace Facebook
         /// Raise OnGetCompleted event handler.
         /// </summary>
         /// <param name="args">The <see cref="FacebookApiEventArgs"/>.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete]
         [SuppressMessage("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
-#endif
+ 
         protected virtual void OnGetCompleted(FacebookApiEventArgs args)
         {
             if (GetCompleted != null)
@@ -350,10 +309,10 @@ namespace Facebook
         /// Raise OnPostCompleted event handler.
         /// </summary>
         /// <param name="args">The <see cref="FacebookApiEventArgs"/>.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete]
         [SuppressMessage("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
-#endif
+ 
         protected virtual void OnPostCompleted(FacebookApiEventArgs args)
         {
             if (PostCompleted != null)
@@ -364,10 +323,10 @@ namespace Facebook
         /// Raise OnDeletedCompleted event handler.
         /// </summary>
         /// <param name="args">The <see cref="FacebookApiEventArgs"/>.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete]
         [SuppressMessage("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
-#endif
+ 
         protected virtual void OnDeleteCompleted(FacebookApiEventArgs args)
         {
             if (DeleteCompleted != null)
@@ -378,20 +337,20 @@ namespace Facebook
         /// Raise OnUploadProgressCompleted event handler.
         /// </summary>
         /// <param name="args">The <see cref="FacebookApiEventArgs"/>.</param>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete]
         [SuppressMessage("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
-#endif
+ 
         protected void OnUploadProgressChanged(FacebookUploadProgressChangedEventArgs args)
         {
             if (UploadProgressChanged != null)
                 UploadProgressChanged(this, args);
         }
 
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete]
         [SuppressMessage("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
-#endif
+ 
         private void OnCompleted(HttpMethod httpMethod, FacebookApiEventArgs args)
         {
             switch (httpMethod)
@@ -417,10 +376,10 @@ namespace Facebook
         /// </summary>
         /// <param name="path">The resource path or the resource url.</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync(string path)
         {
             GetAsync(path, null, null);
@@ -431,10 +390,10 @@ namespace Facebook
         /// </summary>
         /// <param name="parameters">The parameters</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync(object parameters)
         {
             GetAsync(null, parameters, null);
@@ -445,10 +404,10 @@ namespace Facebook
         /// <param name="path">The resource path or the resource url.</param>
         /// <param name="parameters">The parameters</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync(string path, object parameters)
         {
             GetAsync(path, parameters, null);
@@ -461,10 +420,10 @@ namespace Facebook
         /// <param name="parameters">The parameters</param>
         /// <param name="userState">The user state.</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync(string path, object parameters, object userState)
         {
             GetAsync(path, parameters, userState, null);
@@ -478,10 +437,10 @@ namespace Facebook
         /// <param name="userState">The user state.</param>
         /// <param name="resultType">The result type.</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync(string path, object parameters, object userState, Type resultType)
         {
             ApiAsync(HttpMethod.Get, path, parameters, resultType, userState);
@@ -494,10 +453,10 @@ namespace Facebook
         /// <param name="parameters">The parameters</param>
         /// <param name="userState">The user state.</param>
         /// <typeparam name="TResult">The result type.</typeparam>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync<TResult>(string path, object parameters, object userState)
         {
             ApiAsync(HttpMethod.Get, path, parameters, typeof(TResult), userState);
@@ -509,10 +468,10 @@ namespace Facebook
         /// <param name="path">The resource path or the resource url.</param>
         /// <param name="parameters">The parameters</param>
         /// <typeparam name="TResult">The result type.</typeparam>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+
         public virtual void GetAsync<TResult>(string path, object parameters)
         {
             GetAsync<TResult>(path, parameters, null);
@@ -523,10 +482,10 @@ namespace Facebook
         /// </summary>
         /// <param name="path">The resource path or the resource url.</param>
         /// <typeparam name="TResult">The result type.</typeparam>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync<TResult>(string path)
         {
             GetAsync<TResult>(path, null);
@@ -537,10 +496,10 @@ namespace Facebook
         /// </summary>
         /// <param name="parameters">The parameters</param>
         /// <typeparam name="TResult">The result type.</typeparam>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use GetTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void GetAsync<TResult>(object parameters)
         {
             GetAsync<TResult>(null, parameters);
@@ -551,10 +510,10 @@ namespace Facebook
         /// </summary>
         /// <param name="parameters">The parameters</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use PostTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void PostAsync(object parameters)
         {
             PostAsync(null, parameters, null);
@@ -566,10 +525,10 @@ namespace Facebook
         /// <param name="path">The resource path or the resource url.</param>
         /// <param name="parameters">The parameters</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+ 
         [Obsolete("Use PostTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+ 
         public virtual void PostAsync(string path, object parameters)
         {
             PostAsync(path, parameters, null);
@@ -582,10 +541,9 @@ namespace Facebook
         /// <param name="parameters">The parameters</param>
         /// <param name="userState">The user state.</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
         [Obsolete("Use PostTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+
         public virtual void PostAsync(string path, object parameters, object userState)
         {
             ApiAsync(HttpMethod.Post, path, parameters, null, userState);
@@ -596,10 +554,10 @@ namespace Facebook
         /// </summary>
         /// <param name="path">The resource path or the resource url.</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+
         [Obsolete("Use DeleteTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+
         public virtual void DeleteAsync(string path)
         {
             DeleteAsync(path, null, null);
@@ -612,10 +570,10 @@ namespace Facebook
         /// <param name="parameters">The parameters</param>
         /// <param name="userState">The user state.</param>
         /// <returns>The json result.</returns>
-#if FLUENTHTTP_CORE_TPL
+
         [Obsolete("Use DeleteTaskAsync instead.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-#endif
+
         public virtual void DeleteAsync(string path, object parameters, object userState)
         {
             ApiAsync(HttpMethod.Delete, path, parameters, null, userState);
